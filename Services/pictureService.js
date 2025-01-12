@@ -20,6 +20,15 @@ class PictureService {
   async getPictureById(pictureId) {
     return await Picture.findById(pictureId).populate('uploadedBy', 'username');
   }
+
+  async buyPicture(pictureId, userId) {
+    const picture = await Picture.findById(pictureId);
+    if (!picture) {
+      throw new Error('Picture not found');
+    }
+    picture.purchasedBy.push(userId);
+    return await picture.save();
+  }
 }
 
 module.exports = new PictureService();

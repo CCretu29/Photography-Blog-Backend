@@ -1,7 +1,7 @@
 const userService = require('../Services/userService');
+const jwt = require('jsonwebtoken');
 
 class UserController {
-  // POST /api/users
   async createUser(req, res) {
     try {
       const newUser = await userService.createUser(req.body);
@@ -11,7 +11,17 @@ class UserController {
     }
   }
 
-  // PUT /api/users/:id
+  async loginUser(req, res) {
+    try {
+      const { email, password } = req.body;
+      const user = await userService.loginUser(email, password);
+      const token = jwt.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.JWT_SECRET, { expiresIn: '1h' });
+      res.status(200).json({ user, token });
+    } catch (error) {
+      res.status(401).json({ message: error.message });
+    }
+  }
+
   async updateUser(req, res) {
     try {
       const { id } = req.params;
@@ -22,7 +32,6 @@ class UserController {
     }
   }
 
-  // DELETE /api/users/:id
   async deleteUser(req, res) {
     try {
       const { id } = req.params;
@@ -33,7 +42,6 @@ class UserController {
     }
   }
 
-  // GET /api/users/:id
   async getUserById(req, res) {
     try {
       const { id } = req.params;
@@ -44,7 +52,6 @@ class UserController {
     }
   }
 
-  // GET /api/users
   async getAllUsers(req, res) {
     try {
       const users = await userService.getAllUsers();

@@ -1,7 +1,7 @@
 const User = require('../Modules/user');
+const bcrypt = require('bcryptjs');
 
 class UserService {
-  // Create a new user
   async createUser(userData) {
     try {
       const user = new User(userData);
@@ -11,7 +11,18 @@ class UserService {
     }
   }
 
-  // Update a user
+  async loginUser(email, password) {
+    try {
+      const user = await User.findOne({ email });
+      if (!user || !(await user.correctPassword(password))) {
+        throw new Error('Invalid email or password');
+      }
+      return user;
+    } catch (error) {
+      throw new Error(`Login error: ${error.message}`);
+    }
+  }
+
   async updateUser(id, updateData) {
     try {
       const user = await User.findOneAndUpdate({ id: id }, updateData, { new: true });
@@ -24,7 +35,6 @@ class UserService {
     }
   }
 
-  // Delete a user
   async deleteUser(id) {
     try {
       const user = await User.findOneAndDelete({ id: id });
@@ -37,7 +47,6 @@ class UserService {
     }
   }
 
-  // Get a user by ID
   async getUserById(id) {
     try {
       const user = await User.findOne({ id: id });
@@ -50,7 +59,6 @@ class UserService {
     }
   }
 
-  // Get all users
   async getAllUsers() {
     try {
       return await User.find();

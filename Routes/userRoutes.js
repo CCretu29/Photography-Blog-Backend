@@ -1,20 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../Controllers/userController');
+const userAuthMiddleware = require('../middleware/userAuthMiddleware');
 
-// POST /api/users
-router.post('/', userController.createUser);
+// Public routes
+router.post('/register', userController.createUser);
+router.post('/login', userController.loginUser);
+router.get('/', userController.getAllUsers); 
 
-// PUT /api/users/:id
-router.put('/:id', userController.updateUser);
-
-// DELETE /api/users/:id
-router.delete('/:id', userController.deleteUser);
-
-// GET /api/users/:id
-router.get('/:id', userController.getUserById);
-
-// GET /api/users
-router.get('/', userController.getAllUsers);
+// Protected routes
+router.put('/:id', userAuthMiddleware, userController.updateUser);
+router.delete('/:id', userAuthMiddleware, userController.deleteUser);
+router.get('/:id', userAuthMiddleware, userController.getUserById);
 
 module.exports = router;
