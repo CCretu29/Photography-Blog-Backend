@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const Admin = require('../Modules/admin');
+const Admin = require('../Modules/user');
 
 
 const adminAuthMiddleware = async (req, res, next) => {

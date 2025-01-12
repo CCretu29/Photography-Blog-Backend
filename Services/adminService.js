@@ -1,5 +1,4 @@
-const Admin = require('../Modules/admin');
-
+const Admin = require('../Modules/user');
 
 class AdminService {
   async createAdmin(adminData) {
@@ -16,6 +15,18 @@ class AdminService {
       return await Admin.findOne({ username });
     } catch (error) {
       throw new Error(`Error fetching admin: ${error.message}`);
+    }
+  }
+
+  async deleteAdmin(id) {
+    try {
+      const deletedAdmin = await Admin.findByIdAndDelete(id);
+      if (!deletedAdmin) {
+        throw new Error('Admin not found');
+      }
+      return deletedAdmin;
+    } catch (error) {
+      throw new Error(`Error deleting admin: ${error.message}`);
     }
   }
 }
